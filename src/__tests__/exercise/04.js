@@ -15,12 +15,12 @@ test('submitting the form calls onSubmit with username and password', () => {
   const password = screen.getByLabelText(/password/i)
   const submit = screen.getByRole('button', {name: /submit/i})
 
-const buildLoginForm = build({
-  fields: {
-    username: fake(f => f.internet.userName()),
-    password: fake(f => f.internet.password()),
-  },
-})
+  const buildLoginForm = build({
+    fields: {
+      testUsername: fake(f => f.internet.userName()),
+      testPassword: fake(f => f.internet.password()),
+    },
+  })
   const {testUsername, testPassword} = buildLoginForm({testPassword: 'abc'})
 
   userEvent.type(username, testUsername)
