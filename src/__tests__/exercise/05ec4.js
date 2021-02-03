@@ -21,6 +21,7 @@ const server = setupServer(...handlers)
 
 beforeAll(() => server.listen())
 afterAll(() => server.close())
+afterEach(() => server.resetHandlers())
 
 test(`logging in displays the user's username`, async () => {
   render(<Login />)
@@ -52,6 +53,7 @@ test(`not including a password results in an error message`, async () => {
 
 
 test(`server failing for unknown reason results in an error message`, async () => {
+  const errorMessage = 'oh no, the server failed'
   server.use(
     rest.post(
       // note that it's the same URL as our app-wide handler
@@ -59,7 +61,7 @@ test(`server failing for unknown reason results in an error message`, async () =
       'https://auth-provider.example.com/api/login',
       async (req, res, ctx) => {
         // your one-off handler here
-        return res(ctx.status(500), ctx.json({message: 'oh no, the server failed'}))
+        return res(ctx.status(500), ctx.json({message: errorMessage}))
       },
     ),
   )
@@ -73,9 +75,11 @@ test(`server failing for unknown reason results in an error message`, async () =
 
   await waitForElementToBeRemoved(() => screen.getByLabelText(/loading/i))
 
+  expect(screen.getByRole('alert')).toHaveTextContent(errorMessage)
+  // COULD do this one this way instead, but it's not as clear that errorMessage should be the same in both places
   // expect(screen.getByRole('alert').textContent).toMatchInlineSnapshot()
-  expect(screen.getByRole('alert')).toHaveTextContent('oh no, the server failed')
 
-  server.resetHandlers()
+  // KCD suggests including this for all tests
+  // server.resetHandlers()
 })
 
