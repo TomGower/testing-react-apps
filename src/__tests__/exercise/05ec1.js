@@ -5,7 +5,7 @@ import * as React from 'react'
 import {render, screen, waitForElementToBeRemoved} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import {build, fake} from '@jackfranklin/test-data-bot'
-import {rest} from 'msw'
+// import {rest} from 'msw' // I guess this is no longer needed
 import {setupServer} from 'msw/node'
 import Login from 'components/login-submission'
 import {handlers} from 'test/server-handlers'
