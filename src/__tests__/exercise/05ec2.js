@@ -5,7 +5,6 @@ import * as React from 'react'
 import {render, screen, waitForElementToBeRemoved} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import {build, fake} from '@jackfranklin/test-data-bot'
-import {rest} from 'msw'
 import {setupServer} from 'msw/node'
 import Login from 'components/login-submission'
 import {handlers} from 'test/server-handlers'
@@ -44,5 +43,9 @@ test(`not including a password results in an error message`, async () => {
 
   await waitForElementToBeRemoved(() => screen.getByLabelText(/loading/i))
 
+  // my initial version
+  expect(screen.getByText('password required')).toBeInTheDocument()
+
+  // KCD's version
   expect(screen.getByRole('alert')).toHaveTextContent('password required')
 })
