@@ -24,6 +24,7 @@ const {rerender} = render(<ComponentToTest />)
 rerender(<ComponentToTest newProp={true} />)
 */
 
+// my solution
 function renderCustomized(theme) {
   return render(
     <ThemeProvider initialTheme={theme}>
@@ -32,13 +33,31 @@ function renderCustomized(theme) {
   )
 }
 
-test('renders with the light styles for the light theme', () => {
+// KCD's version
+function renderWithTheme(ui, {theme='light', ...options}) {
   function Wrapper({children}) {
-    return <ThemeProvider initialTheme="light">{children}</ThemeProvider>
+    return <ThemeProvider initialTheme={theme}>{children}</ThemeProvider>
   }
-  
-  // render(<EasyButton>Easy</EasyButton>, {wrapper: Wrapper})
-  renderCustomized('light')
+  return render(ui, {wrapper: Wrapper, ...options})
+}
+
+/*
+My initial reaction is based on where I was thinking about where the abstraction was. In what I'm
+testing right now, the implementation of the component is the same all the time. And it's not like
+Wrapper is versatile at all, instead of specific to the ThemeProvider component. I'm set up to
+accept the prop itself, and don't have to worry about the Wrapper utility, which may have some
+useful additional functions, I guess (read docs more?), but doesn't use any of them here. His
+solution feels more like general best practices, WHICH IS GOOD AND WHAT I DON'T KNOW, even if it
+feels to me a bit like overkill here.
+
+And in the video, he does exactly what I did. But his emphasis is that this test, as of right now,
+is only for the Easy Button component, and only for a specific implementation of that. His version
+lets you test ANY version of ANY component, so it's a wrapper for anything using the ThemeProvider.
+*/
+
+test('renders with the light styles for the light theme', () => {
+  // renderCustomized('light')
+  renderWithTheme(<EasyButton>Easy</EasyButton>)
 
   const button = screen.getByRole('button', {name: /easy/i})
   expect(button).toHaveStyle(`
@@ -48,12 +67,8 @@ test('renders with the light styles for the light theme', () => {
 })
 
 test('renders with the dark styles for the dark theme', () => {
-  function Wrapper({children}) {
-    return <ThemeProvider initialTheme="dark">{children}</ThemeProvider>
-  }
-  
-  // render(<EasyButton>Easy</EasyButton>, {wrapper: Wrapper})
-  renderCustomized('dark')
+  // renderCustomized('dark')
+  renderWithTheme(<EasyButton>Easy</EasyButton>, {theme: 'dark'})
 
   const button = screen.getByRole('button', {name: /easy/i})
   expect(button).toHaveStyle(`
