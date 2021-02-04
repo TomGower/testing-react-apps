@@ -52,11 +52,14 @@ test('displays the users current location', async () => {
 
 // no video message for this one
 test('displays error message when geolocation is not supported', async () => {
+  // KCD uses this for what sort of result we should get if there is an error
+  // my conception of problem did not have this in it, instead used empty coords object
   const fakeError = new Error(
     'Geolocation is not supported or permission denied',
   )
   const {promise, reject} = deferred()
 
+  // see MDN documents for getCurrentPosition, takes a success callback and error callback
   window.navigator.geolocation.getCurrentPosition.mockImplementation(
     (successCallback, errorCallback) => {
       promise.catch(() => errorCallback(fakeError))
@@ -65,11 +68,13 @@ test('displays error message when geolocation is not supported', async () => {
 
   render(<Location />)
   expect(screen.getByLabelText(/loading/i)).toBeInTheDocument()
+  // do not need to await promise once resolve is called like above, reject() ends the process
   await act(async () => {
     reject()
   })
 
   expect(screen.queryByLabelText(/loading/i)).not.toBeInTheDocument()
+  // check for contents of error message, my initial conception was having alert in document
   expect(screen.getByRole(/alert/i)).toHaveTextContent(fakeError.message)
 })
 
