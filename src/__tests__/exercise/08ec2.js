@@ -25,6 +25,19 @@ function TestComponent(props) {
 // interact with and assert on results here
 */
 
+/*
+I'd already written these tests as an extension of the basic exercise, so it was a bit of copypasta
+and then some adopting to what I'd done in Extra Credit 1, moving away from the new component.
+
+Honestly, this one kind of confuses me. The initial local scoping approach doesn't get strung up by
+variable references, and seems to work just fine. Sometimes copypasta just solves problems, and
+trying to apply DRY isn't always great. We'll see what KCD has to say.
+
+Eh, I'm not super-impressed. But defaulting to the Senior Engineer thing, specifically that my job
+as a junior engineer is to accept and to understand the senior's wisdom.
+*/
+
+
 function setup(initialProps = {}) {
   const results = {}
   function TestComponent(initialProps) {
