@@ -2,7 +2,6 @@
 // http://localhost:3000/counter-hook
 
 import * as React from 'react'
-// import {render, act} from '@testing-library/react'
 import {renderHook, act} from '@testing-library/react-hooks'
 import useCounter from '../../components/use-counter'
 
@@ -21,7 +20,8 @@ test('exposes the count and increment/decrement functions', () => {
 })
 
 test('accepts an initialCount variable and adjusts from there', () => {
-  const {result} = renderHook(() => useCounter({initialCount : 2}))
+  // const {result} = renderHook(() => useCounter({initialCount : 2}))
+  const {result} = renderHook(useCounter, {initialProps: {initialCount: 2}})
   expect(result.current.count).toBe(2)
   act(() => {result.current.increment()})
   expect(result.current.count).toBe(3)
@@ -30,12 +30,27 @@ test('accepts an initialCount variable and adjusts from there', () => {
 })
 
 test('accepts a step variable and adjusts from there', () => {
-  const {result} = renderHook(() => useCounter({step : 3}))
+  // const {result} = renderHook(() => useCounter({step : 3}))
+  // alternate formulation
+  const {result} = renderHook(useCounter, {initialProps: {step: 3}})
   expect(result.current.count).toBe(0)
   act(() => {result.current.increment()})
   expect(result.current.count).toBe(3)
   act(() => result.current.decrement())
   expect(result.current.count).toBe(0)
+})
+
+test('the step can be changed', () => {
+  // const {result, rerender} = renderHook(() => useCounter({step : 3}))
+  // alternate formulation
+  const {result, rerender} = renderHook(useCounter, {initialProps: {step: 3}})
+  expect(result.current.count).toBe(0)
+  act(() => {result.current.increment()})
+  expect(result.current.count).toBe(3)
+  // the alternate formulation allows us to change the props. THAT is the difference
+  rerender({step: 2})
+  act(() => result.current.decrement())
+  expect(result.current.count).toBe(1)
 })
 
 /* eslint no-unused-vars:0 */
