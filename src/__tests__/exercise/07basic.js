@@ -9,21 +9,20 @@ import EasyButton from '../../components/easy-button'
 test('renders with the light styles for the light theme', () => {
   // this DOES work
   // render(<ThemeProvider><EasyButton>Easy</EasyButton></ThemeProvider>)
+  
+  // but this is more versatile
+  // much more useful for multiple context providers
   function Wrapper({children}) {
     return <ThemeProvider initialTheme="light">{children}</ThemeProvider>
   }
   
   render(<EasyButton>Easy</EasyButton>, {wrapper: Wrapper})
 
-  // 🐨 uncomment all of this code and your test will be busted on the next line:
   const button = screen.getByRole('button', {name: /easy/i})
   expect(button).toHaveStyle(`
     background-color: white;
     color: black;
   `)
-  //
-  // 🐨 update the `render` call above to use the wrapper option using the
-  // ThemeProvider
 })
 
 /* eslint no-unused-vars:0 */
