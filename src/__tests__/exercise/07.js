@@ -2,43 +2,16 @@
 // http://localhost:3000/easy-button
 
 import * as React from 'react'
-import {render, screen} from '@testing-library/react'
-import {ThemeProvider} from '../../components/theme'
+import {render, screen} from 'test/test-utils'
 import EasyButton from '../../components/easy-button'
 
 /*
-2. 💯 create a custom render method
-The duplication is cramping my style. Create a custom render method that encapsulates this shared logic. It'll need to accept an option for the theme (dark or light).
+3. 💯 swap @testing-library/react with app test utils
+We've actually already created a custom render method for this! So swap your import of @testing-library/react with test/test-utils which you can find in ./src/test/test-utils.js.
 */
-/*
-import {render as rtlRender} from '@testing-library/react'
-// "rtl" is short for "react testing library" not "right-to-left" 😅
-
-function render(ui, options) {
-  return rtlRender(ui, {wrapper: Wrapper, ...options})
-}
-
-// then in your tests, you don't need to worry about context at all:
-const {rerender} = render(<ComponentToTest />)
-
-rerender(<ComponentToTest newProp={true} />)
-*/
-
-function renderCustomized(theme) {
-  return render(
-    <ThemeProvider initialTheme={theme}>
-      <EasyButton>Easy</EasyButton>
-    </ThemeProvider>
-  )
-}
 
 test('renders with the light styles for the light theme', () => {
-  function Wrapper({children}) {
-    return <ThemeProvider initialTheme="light">{children}</ThemeProvider>
-  }
-  
-  // render(<EasyButton>Easy</EasyButton>, {wrapper: Wrapper})
-  renderCustomized('light')
+  render(<EasyButton>Easy</EasyButton>)
 
   const button = screen.getByRole('button', {name: /easy/i})
   expect(button).toHaveStyle(`
@@ -48,12 +21,9 @@ test('renders with the light styles for the light theme', () => {
 })
 
 test('renders with the dark styles for the dark theme', () => {
-  function Wrapper({children}) {
-    return <ThemeProvider initialTheme="dark">{children}</ThemeProvider>
-  }
-  
-  // render(<EasyButton>Easy</EasyButton>, {wrapper: Wrapper})
-  renderCustomized('dark')
+  render(<EasyButton>Easy</EasyButton>, {
+    theme: 'dark',
+  })
 
   const button = screen.getByRole('button', {name: /easy/i})
   expect(button).toHaveStyle(`
